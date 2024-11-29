@@ -63,7 +63,10 @@ int searchAtVarTable(Tree * tree, char symbol)
 {
     if ( !tree ) return -1;
     for (int i = 0; i < sizeOfTable; i++) {
-        if (tree->tableOfVar[i].symbol == symbol) return i;
+        if (tree->tableOfVar[i].symbol == symbol) {
+            printf("vartable%c, var%c\n", tree->tableOfVar[i].symbol, symbol);
+            return i;
+        }
     }
 
     return -1;

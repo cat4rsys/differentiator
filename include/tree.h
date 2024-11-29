@@ -11,9 +11,11 @@ const int sizeOfTable = 50;
 
 enum TypeOfValue
 {
+    UNK = 0,
     NUM = 1,
     VAR = 2,
-    OP  = 3
+    OP  = 3,
+    EMP = 4
 };
 
 enum Operations
@@ -82,13 +84,17 @@ TreeError destructTree(Tree * tree);
 
 void _freeNode(Node * node);
 
-#define ADD(left, right) createNode(NULL, OP,  ADD,   left, right)
-#define SUB(left, right) createNode(NULL, OP,  SUB,   left, right)
-#define MUL(left, right) createNode(NULL, OP,  MUL,   left, right)
-#define DIV(left, right) createNode(NULL, OP,  DIV,   left, right)
-#define DEG(left, right) createNode(NULL, OP,  DEG,   NULL, NULL)
-#define NUM(value)       createNode(NULL, NUM, value, NULL, NULL)
-#define VAR(tree, value) createNode(tree, VAR, value, NULL, NULL)
+#define CREATE_EMP        createNode(NULL, EMP, 0,     0,          0)
+#define _ADD(left, right) createNode(NULL, OP,  ADD,   left,       right)
+#define _SUB(left, right) createNode(NULL, OP,  SUB,   left,       right)
+#define _MUL(left, right) createNode(NULL, OP,  MUL,   left,       right)
+#define _DIV(left, right) createNode(NULL, OP,  DIV,   left,       right)
+#define _DEG(left, right) createNode(NULL, OP,  DEG,   left,       right)
+#define _LOG(left, right) createNode(NULL, OP,  LOG,   left,       right)
+#define _COS(right)       createNode(NULL, OP,  COS,   CREATE_EMP, right)
+#define _SIN(right)       createNode(NULL, OP,  SIN,   CREATE_EMP, right)
+#define _NUM(value)       createNode(NULL, NUM, value, NULL,       NULL)
+#define _VAR(tree, value) createNode(tree, VAR, value, NULL,       NULL)
 
 int searchAtVarTable(Tree * tree, char symbol);
 

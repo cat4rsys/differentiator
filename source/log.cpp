@@ -63,7 +63,12 @@ void printColorToLog(TypeOfValue type, FILE * dotFile) {
             fprintf(dotFile, "color=\"aqua\"]\n\t");
             break;
         }
-        default:
+        case EMP:
+        {
+            fprintf(dotFile, "color=\"crimson\"]\n\t");
+            break;
+        }
+        case UNK: default:
         {
             printf("UNKNOWN ERR\n");
         }

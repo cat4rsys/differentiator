@@ -1,17 +1,9 @@
 digraph G{
 	rankdir=TB;
 	node[shape=rect,style=rounded];
-	ptr0x639cc4e5db00 [shape=record,label="{ ptr:0x639cc4e5db00 | type:3 | data:4 }",color="aqua"]
-	ptr0x639cc4e5dad0 [shape=record,label="{ ptr:0x639cc4e5dad0 | type:3 | data:1 }",color="aqua"]
-	ptr0x639cc4e5daa0 [shape=record,label="{ ptr:0x639cc4e5daa0 | type:2 | data:1 }",color="darkorchid1"]
-	ptr0x639cc4e5dad0 -> ptr0x639cc4e5daa0;
-	ptr0x639cc4e5da70 [shape=record,label="{ ptr:0x639cc4e5da70 | type:1 | data:3 }",color="springgreen"]
-	ptr0x639cc4e5dad0 -> ptr0x639cc4e5da70;
-	ptr0x639cc4e5db00 -> ptr0x639cc4e5dad0;
-	ptr0x639cc4e5da40 [shape=record,label="{ ptr:0x639cc4e5da40 | type:3 | data:2 }",color="aqua"]
-	ptr0x639cc4e5da10 [shape=record,label="{ ptr:0x639cc4e5da10 | type:2 | data:0 }",color="darkorchid1"]
-	ptr0x639cc4e5da40 -> ptr0x639cc4e5da10;
-	ptr0x639cc4e5d9e0 [shape=record,label="{ ptr:0x639cc4e5d9e0 | type:1 | data:7 }",color="springgreen"]
-	ptr0x639cc4e5da40 -> ptr0x639cc4e5d9e0;
-	ptr0x639cc4e5db00 -> ptr0x639cc4e5da40;
+	ptr0x5733209549e0 [shape=record,label="{ ptr:0x5733209549e0 | type:3 | data:8 }",color="aqua"]
+	ptr0x573320955a20 [shape=record,label="{ ptr:0x573320955a20 | type:4 | data:0 }",color="crimson"]
+	ptr0x5733209549e0 -> ptr0x573320955a20;
+	ptr0x573320955a50 [shape=record,label="{ ptr:0x573320955a50 | type:2 | data:0 }",color="darkorchid1"]
+	ptr0x5733209549e0 -> ptr0x573320955a50;
 	}
