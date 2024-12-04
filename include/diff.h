@@ -24,5 +24,7 @@ void doOperation(Node * operationNode);
 
 int simplifyEquation(Node * root);
 
+void freeLeaves(Node * actualNode);
+
 #endif // DIFF_H
 

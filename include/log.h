@@ -16,6 +16,6 @@ void printColorToLog(TypeOfValue type, FILE * dotFile);
 
 void printInfoAboutNode(Node * actualNode, FILE * dotFile);
 
-void dump(Tree * tree, char * pathToDot);
+void dump(Node * firstNode, const char * pathToDot, const char * pathToPng);
 
 #endif // LOGH

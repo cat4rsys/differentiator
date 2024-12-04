@@ -4,6 +4,8 @@
 #include "log.h"
 #include "tree.h"
 
+int numberOfOperation = 0;
+
 void logDump(const char * func, const int line, const char * file, Tree * tree)
 {
     char dotFile[sizeOfBuf] = {};
@@ -12,17 +14,10 @@ void logDump(const char * func, const int line, const char * file, Tree * tree)
     snprintf(dotFile, sizeOfBuf, "log/%d.dot", tree->numberOfOperation);
     snprintf(pngFile, sizeOfBuf, "log/%d.png", tree->numberOfOperation);
 
-    tree->numberOfOperation++;
+    numberOfOperation++;
 
     fprintf(tree->logFile, "Dump called from function %s (%s:%d)\n\n", func, file, line);
-    dump(tree, dotFile);
-
-    char cmd[sizeOfBuf] = "dot -Tpng -o ";
-    strcat(cmd, pngFile);
-    strcat(cmd, " ");
-    strcat(cmd, dotFile);
-
-    system(cmd);
+    dump(tree->firstNode, dotFile, pngFile);
 
     fprintf(tree->logFile, "<img src=\"%s\">\n", pngFile + 4);
 }
@@ -70,24 +65,31 @@ void printColorToLog(TypeOfValue type, FILE * dotFile) {
         }
         case UNK: default:
         {
-            printf("UNKNOWN ERR\n");
+            printf("UNKNOWN LOG ERR\n");
         }
     }
 
     return;
 }
 
-void dump(Tree * tree, char * pathToDot)
+void dump(Node * firstNode, const char * pathToDot, const char * pathToPng)
 {
     FILE * dotFile = fopen(pathToDot, "w");
     if (!dotFile) return;
 
     fprintf(dotFile, "digraph G{\n\trankdir=TB;\n\tnode[shape=rect,style=rounded];\n\t");
 
-    printInfoAboutNode(tree->firstNode, dotFile);
+    printInfoAboutNode(firstNode, dotFile);
 
     fprintf(dotFile, "}\n");
 
     fclose(dotFile);
+
+    char cmd[sizeOfBuf] = "dot -Tpng -o ";
+    strcat(cmd, pathToPng);
+    strcat(cmd, " ");
+    strcat(cmd, pathToDot);
+
+    system(cmd);
 }
 

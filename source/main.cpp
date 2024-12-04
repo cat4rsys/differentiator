@@ -17,7 +17,7 @@ int main()
 
     tree->firstNode = diff(tree, tree->firstNode, 'x');
 
-    //printf("%d\n", simplifyEquation(tree->firstNode));
+    while(simplifyEquation(tree->firstNode));
 
     DO_LOG_DUMP(0, 0, tree);
 

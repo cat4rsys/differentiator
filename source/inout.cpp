@@ -188,6 +188,7 @@ int p = 0;
 void syntaxError()
 {
     fprintf(stderr, "Syntax error at %d symbol.", p);
+    abort();
 }
 
 int getG()
@@ -254,4 +255,52 @@ int getP()
         int val = getN();
         return val;
     }
+}
+
+Node * getGrammar(Grammar *g)
+{
+    Node * val = getEquation(g);
+
+    if (g->str[g->position] != '$')
+        syntaxError();
+
+    p++;
+
+    return val;
+}
+
+Node * getNumber(Grammar * g)
+{
+    double num = 0;
+
+    bool ifDot        = 0;
+    int numsAfterDot  = 0;
+    char symbol       = g->str[g->position];
+
+    while ( isdigit(symbol) || symbol == '.' || symbol == ',' ) {
+        symbol = g->str[g->position];
+
+        if ( isdigit(symbol) ) {
+            num = num * 10 + symbol - '0';
+            if ( ifDot == 1 ) {
+                numsAfterDot++;
+            }
+        }
+
+        if ( symbol == '.' || symbol == ',' ) {
+            if (ifDot == 1) {
+                g->error = TWO_OR_MORE_FRACTIONAL;
+                return NULL;
+            }
+            ifDot = 1;
+        }
+
+        p++;
+    }
+
+    for ( ; numsAfterDot > 0; numsAfterDot-- ) {
+        num /= 10.0;
+    }
+
+    return _NUM(num);
 }

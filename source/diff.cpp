@@ -1,6 +1,7 @@
 #include "tree.h"
 #include "utilities.h"
 #include "diff.h"
+#include "log.h"
 #include <math.h>
 #include <cstdio>
 #include <stdlib.h>
@@ -22,6 +23,9 @@ Node * diff(Tree * tree, Node * actualNode, char var)
     }
     else if (actualNode->typeOfData == OP) {
         switch ((int)actualNode->data) {
+            // TODO DIFF_(left)
+            // TODO ADD_, SUB_
+
             case ADD: return _ADD(diff(tree, actualNode->left, var), diff(tree, actualNode->right, var));
             case SUB: return _SUB(diff(tree, actualNode->left, var), diff(tree, actualNode->right, var));
             case MUL: return _ADD(_MUL(diff(tree, actualNode->left, var), clone(actualNode->right)),
@@ -66,43 +70,177 @@ Node * clone(Node * actualNode)
     return copiedNode;
 }
 
-static int _simplifyEquation(Node * actualNode, Node * parentNode)
+static int _simplifyEquation(Node * actualNode, Node * parentNode) // TODO underscore
 {
     if ( !actualNode ) return 0;
-    else if (actualNode->typeOfData != OP) return 0;
+    printf("TRYING TO SIMPLIFY:\n");
+    printf("node: %p, type %u, data %lg\n", actualNode, actualNode->typeOfData, actualNode->data);
+    if ( parentNode) printf("parent node: %p, type %u, data %lg\n", parentNode, parentNode->typeOfData, parentNode->data);
+    if (actualNode->left) printf("left node: %p, type %u, data %lg\n", actualNode->left, actualNode->left->typeOfData, actualNode->left->data);
+    if (actualNode->right) printf("right node: %p, type %u, data %lg\n", actualNode->right, actualNode->right->typeOfData, actualNode->right->data);
+    if (actualNode->typeOfData != OP) return 0;
     else if ((actualNode->typeOfData == OP && IS_NUM(actualNode->left) && IS_NUM(actualNode->right)) || (IS_EMP_NORM(actualNode))) {
         doOperation(actualNode);
         printf("New data: %lg\n", actualNode->data);
 
-        free(actualNode->left);
-        free(actualNode->right);
-        actualNode->left  = NULL;
-        actualNode->right = NULL;
+        freeLeaves(actualNode);
 
         return 1;
     }
-    else if ((IS_EMP(actualNode->right)) || (IS_EMP(actualNode->right))) {
+    /*else if ((IS_EMP(actualNode->right)) || (IS_EMP(actualNode->right))) { // TODO IS_EMPTY()
         actualNode->typeOfData = EMP;
-        free(actualNode->left);
-        free(actualNode->right);
+        freeLeaves(actualNode);
 
         return 1;
+    }*/
+    else if (IS_ZERO(actualNode->left)) {
+        switch ((int)actualNode->data) { // TODO use union
+            case MUL:
+            {
+                actualNode->data = 0;
+                actualNode->typeOfData = NUM;
+                freeLeaves(actualNode);
+
+                return 1;
+            }
+            case ADD:
+            {
+                if (changeNodes(parentNode, actualNode, actualNode->right)) {
+                    free(actualNode->left);
+                    free(actualNode);
+                    return 1;
+                }
+                return 1;
+            }
+            case SUB:
+            {
+                actualNode->data = MUL;
+                actualNode->left->data = -1;
+
+                return 1;
+            }
+            case DEG:
+            {
+                actualNode->data = 0;
+                actualNode->typeOfData = NUM;
+                freeLeaves(actualNode);
+
+                return 1;
+            }
+            case DIV:
+            {
+                actualNode->data = 0;
+                actualNode->typeOfData = NUM;
+                freeLeaves(actualNode);
+
+                return 1;
+            }
+            default: break;
+        }
+    }
+    else if (IS_ZERO(actualNode->right)) {
+        switch ((int)actualNode->data) {
+            case MUL:
+            {
+                actualNode->data = 0;
+                actualNode->typeOfData = NUM;
+                freeLeaves(actualNode);
+
+                return 1;
+            }
+            case ADD: case SUB:
+            {
+                if (changeNodes(parentNode, actualNode, actualNode->left)) {
+                    free(actualNode->right);
+                    free(actualNode);
+                    return 1;
+                }
+                return 1;
+            }
+            case DEG:
+            {
+                actualNode->data = 1;
+                actualNode->typeOfData = NUM;
+                freeLeaves(actualNode);
+
+                return 1;
+            }
+            case DIV:
+            {
+                actualNode->typeOfData = EMP;
+                freeLeaves(actualNode);
+
+                return 1;
+            }
+            default: break;
+        }
+    }
+    else if (IS_ONE(actualNode->left)) {
+        switch ((int)actualNode->data) {
+            case MUL:
+            {
+                if (changeNodes(parentNode, actualNode, actualNode->right)) {
+                    free(actualNode->left);
+                    free(actualNode);
+                    return 1;
+                }
+
+                return 1;
+            }
+            case DEG:
+            {
+                actualNode->data = 1;
+                actualNode->typeOfData = NUM;
+                freeLeaves(actualNode);
+
+                return 1;
+            }
+            default: break;
+        }
+    }
+    else if (IS_ONE(actualNode->right)) {
+        switch ((int)actualNode->data) {
+            case MUL: case DEG: case DIV:
+            {
+                if (changeNodes(parentNode, actualNode, actualNode->left)) {
+                    free(actualNode->right);
+                    free(actualNode);
+                    return 1;
+                }
+
+                return 1;
+            }
+            default: break;
+        }
     }
 
     return _simplifyEquation(actualNode->right, actualNode) + _simplifyEquation(actualNode->left, actualNode);
 }
 
+void freeLeaves(Node * actualNode)
+{
+    free(actualNode->left);
+    free(actualNode->right);
+    actualNode->left  = NULL;
+    actualNode->right = NULL;
+}
+
 int simplifyEquation(Node * root)
 {
+    dump(root, "aaa.dot", "aaa.png");
+    char buf[2] = {};
+    fgets(buf, 2, stdin);
     return _simplifyEquation(root, NULL);
 }
 
 int changeNodes(Node * parentNode, Node * prevNode, Node * newNode)
 {
     if ( !parentNode ) {
-        Node * temp = prevNode;
-        prevNode = newNode;
-        free(temp);
+        if (prevNode->left == newNode) free(prevNode->right);
+        else                           free(prevNode->left);
+
+        *prevNode = *newNode;
+        free(newNode);
         return 0;
     }
 

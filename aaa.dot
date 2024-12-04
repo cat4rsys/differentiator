@@ -1,0 +1,9 @@
+digraph G{
+	rankdir=TB;
+	node[shape=rect,style=rounded];
+	ptr0x5950d494a190 [shape=record,label="{ ptr:0x5950d494a190 | type:3 | data:3 }",color="aqua"]
+	ptr0x5950d494a130 [shape=record,label="{ ptr:0x5950d494a130 | type:1 | data:2 }",color="springgreen"]
+	ptr0x5950d494a190 -> ptr0x5950d494a130;
+	ptr0x5950d494a0d0 [shape=record,label="{ ptr:0x5950d494a0d0 | type:2 | data:0 }",color="darkorchid1"]
+	ptr0x5950d494a190 -> ptr0x5950d494a0d0;
+	}

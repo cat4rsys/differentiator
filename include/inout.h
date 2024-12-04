@@ -4,6 +4,20 @@
 #include "tree.h"
 #include <stdio.h>
 
+enum GrammarError
+{
+    TWO_OR_MORE_FRACTIONAL = 1 << 1
+};
+
+typedef struct Grammar
+{
+    char * str;
+    size_t position;
+    VarElement * tableOfVar;
+
+    GrammarError error;
+} Grammar;
+
 void printInfix(FILE * outputFile, Node * actualNode, Tree * tree);
 
 void printPrefix(FILE * outputFile, Node * actualNode, Tree * tree);
@@ -29,5 +43,23 @@ int getE();
 int getT();
 
 int getN();
+
+Node * getGrammar(Grammar * g);
+
+Node * getNumber(Grammar * g);
+
+Node * getVar(Grammar * g);
+
+Node * getFunction(Grammar * g);
+
+Node * getElementary(Grammar * g);
+
+Node * getDegree(Grammar * g);
+
+Node * getMult(Grammar * g);
+
+Node * getAdd(Grammar * g);
+
+Node * getEquation(Grammar * g);
 
 #endif // INOUT_H
